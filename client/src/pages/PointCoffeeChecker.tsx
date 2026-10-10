@@ -1,0 +1,35 @@
+import { useRef, useState, type ChangeEvent } from "react";
+import { ArrowLeft, FileText, ShieldCheck, Upload } from "lucide-react";
+import PointCoffeeMonthlyChecker from "@/pages/PointCoffeeMonthlyChecker";
+import { PeriodSwitch, type Period } from "@/components/MonthlyUploadParts";
+import { formatPointCoffeeMoney, parsePointCoffeeFiles, type PointCoffeeResult } from "@/lib/pointcoffeParser";
+
+type Props = { onBack: () => void };
+
+// Wrapper: jalur HARIAN (1 file) dan BULANAN (banyak file) dipisah.
+export default function PointCoffeeChecker({ onBack }: Props) {
+  const [period, setPeriod] = useState<Period>("daily");
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const handleMultiple = (files: File[]) => { setPendingFiles(files); setPeriod("monthly"); };
+  const handlePeriod = (next: Period) => { if (next === "daily") setPendingFiles([]); setPeriod(next); };
+  return period === "monthly"
+    ? <PointCoffeeMonthlyChecker onBack={onBack} period={period} onPeriod={handlePeriod} initialFiles={pendingFiles} />
+    : <PointCoffeeDailyChecker onBack={onBack} period={period} onPeriod={handlePeriod} onMultiple={handleMultiple} />;
+}
+
+// JALUR HARIAN (LOCKED): parser & perhitungan tidak diubah.
+function PointCoffeeDailyChecker({ onBack, period, onPeriod, onMultiple }: Props & { period: Period; onPeriod: (period: Period) => void; onMultiple: (files: File[]) => void }) {
+  const [result, setResult] = useState<PointCoffeeResult | null>(null);
+  const [source, setSource] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleFiles = async (files: File[]) => {
+    if (!files.length) return;
+    if (files.length > 1) { onMultiple(files); return; }
+    const parsed = await parsePointCoffeeFiles(files);
+    setResult(parsed);
+    setSource(files.length === 1 ? files[0].name : `${files.length} file CSV`);
+    setSelectedFiles(files.map((file) => file.name));
+  };
+  return <div className="app-shell"><aside className="app-sidebar"><div className="brand-lockup"><div className="brand-mark"><span>α</span></div><div><div className="brand-name">nstax</div><div className="brand-caption">transaction intelligence</div></div></div><div className="sidebar-divider" /><nav className="sidebar-nav"><button className="nav-item" type="button" onClick={onBack}><ArrowLeft size={18} /><span>Kembali ke CEK UPL</span></button><div className="nav-item is-active"><FileText size={18} /><span>CEK POINTCOFFE</span></div></nav><div className="sidebar-footer"><div className="privacy-badge"><ShieldCheck size={16} /><div><strong>Local-first</strong><span>Data tidak keluar dari browser</span></div></div></div></aside><main className="main-content"><header className="topbar"><button className="button button-secondary compact" type="button" onClick={onBack}><ArrowLeft size={15} /> Kembali ke CEK UPL</button><div className="breadcrumb"><span>CEK UPL</span><span>›</span><strong>CEK POINTCOFFE</strong></div><div className="status-chip"><span className="status-dot" /></div></header><div className="page-container"><section className="page-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> CEK POINTCOFFE · CSV PIPE</div><h1>Periksa transaksi<br /><em>PointCoffee.</em></h1><p>Upload satu CSV dengan delimiter pipe (|). Seluruh baris valid dari file dihitung.</p></div><div className="heading-meta"><span className="meta-label">CURRENT SOURCE</span><strong>{source || "Belum ada file"}</strong><span className="meta-subtitle">{result ? `${result.rows.length} transaksi valid` : "Menunggu CSV"}</span></div></section><section className="input-panel panel-surface"><PeriodSwitch period={period} onChange={onPeriod} /><div className="panel-heading"><div className="panel-title-wrap"><span className="section-number">01</span><div><h2>Upload file harian PointCoffee</h2><p>Delimiter wajib: | (pipe), bukan koma.</p></div></div>{source && <span className="file-pill"><FileText size={15} />{source}</span>}</div><div className="drop-zone"><div className="upload-symbol"><Upload size={20} /></div><strong>Pilih satu atau beberapa CSV</strong><span>Lebih dari 1 file otomatis masuk daftar bulanan</span><button className="button button-secondary" type="button" onClick={() => inputRef.current?.click()}><FileText size={16} /> Pilih file CSV</button><small>Header: TANGGAL|WAKTU|TOKO|NO_STRUK|SHIFT|STATION|DESKRIPSI_ITEM|DPP|PAJAK_RESTORAN</small><input ref={inputRef} type="file" accept=".csv,text/csv" multiple hidden onChange={(event: ChangeEvent<HTMLInputElement>) => { void handleFiles(Array.from(event.target.files ?? [])); event.target.value = ""; }} /></div>{selectedFiles.length > 0 && <div className="used-columns"><strong>File diproses: {selectedFiles.length}</strong>{selectedFiles.map((name) => <span key={name}>✓ {name}</span>)}</div>}<div className="privacy-note"><ShieldCheck size={15} /> Diproses lokal di browser</div></section>{result && <>{!result.ok && <div className="notice notice-error">{result.error}</div>}{result.ok && <><div className="metric-grid upl-metrics"><div className="metric-card"><span className="metric-label">Total file</span><strong className="metric-value">{selectedFiles.length}</strong></div><div className="metric-card"><span className="metric-label">Total transaksi</span><strong className="metric-value">{result.summary.count.toLocaleString("id-ID")}</strong></div><div className="metric-card"><span className="metric-label">Total subtotal</span><strong className="metric-value">{formatPointCoffeeMoney(result.summary.subtotal)}</strong></div><div className="metric-card"><span className="metric-label">Total DPP</span><strong className="metric-value">{formatPointCoffeeMoney(result.summary.dpp)}</strong></div><div className="metric-card"><span className="metric-label">Total tax</span><strong className="metric-value">{formatPointCoffeeMoney(result.summary.tax)}</strong></div><div className="metric-card"><span className="metric-label">Total total</span><strong className="metric-value">{formatPointCoffeeMoney(result.summary.total)}</strong></div></div>{result.warnings.map((warning) => <div className="notice notice-warning" key={warning}>{warning}</div>)}<section className="excel-preview"><div className="section-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> 02 · DATASET PENUH</div><h2>Daftar transaksi PointCoffee</h2></div><span className="result-count">{result.rows.length} baris</span></div><div className="excel-scroll"><table><thead><tr><th>No</th><th>No Struk</th><th>Date Trans</th><th>Toko</th><th>DPP</th><th>Tax</th><th>Total</th><th>Keterangan</th></tr></thead><tbody>{result.rows.map((row, index) => <tr key={`${row.no_struk}-${index}`}><td>{index + 1}</td><td>{row.no_struk}</td><td>{row.date_trans}</td><td>{row.toko}</td><td>{formatPointCoffeeMoney(row.dpp)}</td><td>{formatPointCoffeeMoney(row.tax)}</td><td>{formatPointCoffeeMoney(row.total)}</td><td>{row.keterangan}</td></tr>)}</tbody></table></div></section></>}</>}</div></main></div>;
+}
