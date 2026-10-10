@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type DragEvent, type ChangeEvent, type React
 import {
   AlertTriangle,
   BarChart3,
+  ArrowLeftRight,
   Check,
   ChevronRight,
   Clipboard,
@@ -38,6 +39,8 @@ import {
   type ParsedTransaction,
   type ParseResult,
 } from "@/lib/transactionParser";
+import { BrandLogo, NstaxMark } from "@/components/BrandLogo";
+import { PARSER_BRANDS, categoryBrand, type BrandSpec } from "@/lib/parserBrands";
 import ForeChecker from "@/pages/ForeChecker";
 import VendorChecker from "@/pages/VendorChecker";
 import type { VendorKind } from "@/lib/vendorParser";
@@ -390,30 +393,79 @@ function NscChecker({ onBack }: { onBack?: () => void }) {
 
 type AppMode = "api-menu" | "upl-menu" | "home" | "fore" | "nsc" | "nasgor69" | "receipt" | "receipt-compare" | "upl" | "pointcoffe" | "omala-menu" | "omala-hotel" | "omala-resto" | "omahpadhang" | "jambuluwuk" | "innatretes" | "astana" | VendorKind;
 
-function MenuShell({ onBack, backLabel, children }: { onBack?: () => void; backLabel?: string; children: ReactNode }) {
+type Crumb = { label: string; onClick?: () => void };
+
+function MenuShell({ onBack, backLabel, trail, children }: { onBack?: () => void; backLabel?: string; trail?: Crumb[]; children: ReactNode }) {
   return (
-    <div className="mode-shell">
+    <div className="mode-shell nx-shell">
       <header className="mode-brand">
-        <div className="mode-brand-left"><div className="brand-mark"><span>α</span></div><div className="brand-name">nstax</div></div>
+        <div className="mode-brand-left">
+          <NstaxMark size={36} />
+          <div className="nx-wordmark"><div className="brand-name">nstax</div><div className="nx-caption">transaction intelligence</div></div>
+        </div>
         {onBack && <button className="button button-secondary compact" type="button" onClick={onBack}>← {backLabel ?? "Kembali"}</button>}
       </header>
-      <main className="menu-main">{children}</main>
+      <main className="menu-main">
+        {trail && trail.length > 0 && (
+          <nav className="nx-trail" aria-label="Breadcrumb">
+            {trail.map((crumb, index) => (
+              <span key={crumb.label} className="nx-trail-item">
+                {index > 0 && <ChevronRight size={12} />}
+                {crumb.onClick ? <button type="button" onClick={crumb.onClick}>{crumb.label}</button> : <strong>{crumb.label}</strong>}
+              </span>
+            ))}
+          </nav>
+        )}
+        {children}
+      </main>
     </div>
   );
 }
 
-function MenuCard<T extends string>({ mode, label, wide, onSelect }: { mode: T; label: string; wide?: boolean; onSelect: (mode: T) => void }) {
-  return <button className={`menu-card${wide ? " is-wide" : ""}`} type="button" onClick={() => onSelect(mode)}>{label}</button>;
+function MenuCard<T extends string>({ mode, label, wide, lead, onSelect }: { mode: T; label: string; wide?: boolean; lead?: ReactNode; onSelect: (mode: T) => void }) {
+  return (
+    <button className={`menu-card${wide ? " is-wide" : ""}`} type="button" onClick={() => onSelect(mode)}>
+      {lead && <span className="menu-card-lead">{lead}</span>}
+      <span className="menu-card-label">{label}</span>
+      <span className="menu-card-arrow" aria-hidden="true"><ChevronRight size={16} strokeWidth={2.4} /></span>
+    </button>
+  );
+}
+
+function ParserCard<T extends string>({ mode, label, onSelect }: { mode: T; label: string; onSelect: (mode: T) => void }) {
+  const spec: BrandSpec = PARSER_BRANDS[mode] ?? { name: label };
+  return <MenuCard mode={mode} label={label} lead={<BrandLogo spec={spec} size={44} />} onSelect={onSelect} />;
+}
+
+function HeroArt() {
+  return (
+    <svg className="nx-hero-art" viewBox="0 0 220 150" aria-hidden="true">
+      <rect x="22" y="22" width="120" height="92" rx="10" fill="#fff" stroke="#efd9c2" />
+      <circle cx="38" cy="36" r="3" fill="#e2581a" /><circle cx="48" cy="36" r="3" fill="#f2a56b" /><circle cx="58" cy="36" r="3" fill="#f6cfa8" />
+      <rect x="36" y="52" width="64" height="6" rx="3" fill="#efe3d4" /><rect x="36" y="66" width="46" height="6" rx="3" fill="#f3e9dc" />
+      <rect x="104" y="78" width="38" height="36" rx="8" fill="#e2581a" />
+      <rect x="112" y="98" width="5" height="10" rx="1.5" fill="#fff" /><rect x="120" y="90" width="5" height="18" rx="1.5" fill="#fff" /><rect x="128" y="84" width="5" height="24" rx="1.5" fill="#fff" />
+      <rect x="150" y="30" width="50" height="34" rx="9" fill="#fff" stroke="#efd9c2" /><circle cx="164" cy="47" r="4" fill="#e2581a" /><rect x="174" y="43" width="20" height="5" rx="2.5" fill="#efe3d4" />
+    </svg>
+  );
 }
 
 function ApiSelector({ onSelect }: { onSelect: (mode: AppMode) => void }) {
   return (
     <MenuShell>
+      <section className="nx-hero">
+        <div className="nx-hero-copy">
+          <div className="eyebrow"><span className="eyebrow-line" /> Solusi cerdas untuk data transaksi</div>
+          <h1>Transaction Intelligence, <em>Simplified.</em></h1>
+          <p>Periksa, olah, dan bandingkan data transaksi dalam satu workspace.</p>
+        </div>
+        <HeroArt />
+      </section>
       <nav className="menu-home" aria-label="Menu utama">
-        <MenuCard mode="api-menu" label="CEK DATA API" wide onSelect={onSelect} />
-        <MenuCard mode="receipt" label="CEK STRUK" onSelect={onSelect} />
-        <MenuCard mode="receipt-compare" label="COMPARE 2 FILE" onSelect={onSelect} />
-        <MenuCard mode="upl-menu" label="CEK UPL" wide onSelect={onSelect} />
+        <MenuCard mode="api-menu" label="CEK DATA API" wide lead={<span className="menu-icon"><Database size={26} strokeWidth={1.7} /></span>} onSelect={onSelect} />
+        <MenuCard mode="receipt" label="CEK STRUK" lead={<span className="menu-icon"><Receipt size={26} strokeWidth={1.7} /></span>} onSelect={onSelect} />
+        <MenuCard mode="receipt-compare" label="COMPARE 2 FILE" lead={<span className="menu-icon"><ArrowLeftRight size={26} strokeWidth={1.7} /></span>} onSelect={onSelect} />
+        <MenuCard mode="upl-menu" label="CEK UPL" wide lead={<span className="menu-icon"><Upload size={26} strokeWidth={1.7} /></span>} onSelect={onSelect} />
       </nav>
     </MenuShell>
   );
@@ -421,12 +473,18 @@ function ApiSelector({ onSelect }: { onSelect: (mode: AppMode) => void }) {
 
 function ApiParserSelector({ onSelect, onBack }: { onSelect: (mode: AppMode) => void; onBack: () => void }) {
   const parsers: Array<[AppMode, string]> = [["astana", "ASTANA"], ["fore", "FORE"], ["nsc", "NSC"], ["nasgor69", "NASGOR 69"], ["rotio", "ROTIO"], ["kai", "KAI"], ["hokben", "HOKBEN"], ["kopken", "KOPKEN"], ["fave", "FAVE"], ["sams", "SAMS"]];
+  const [query, setQuery] = useState("");
+  const visible = parsers.filter(([, label]) => label.toLowerCase().includes(query.trim().toLowerCase()));
   return (
-    <MenuShell onBack={onBack} backLabel="Menu utama">
-      <h1 className="menu-title">CEK DATA API</h1>
+    <MenuShell onBack={onBack} backLabel="Menu utama" trail={[{ label: "Beranda", onClick: onBack }, { label: "Cek Data API" }]}>
+      <div className="menu-title-row">
+        <h1 className="menu-title">CEK DATA API</h1>
+        <label className="search-field nx-search"><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari parser..." aria-label="Cari parser" /></label>
+      </div>
       <nav className="menu-grid" aria-label="Parser API">
-        {parsers.map(([mode, label]) => <MenuCard key={mode} mode={mode} label={label} onSelect={onSelect} />)}
+        {visible.map(([mode, label]) => <ParserCard key={mode} mode={mode} label={label} onSelect={onSelect} />)}
       </nav>
+      {visible.length === 0 && <div className="nx-empty">Parser tidak ditemukan.</div>}
     </MenuShell>
   );
 }
@@ -443,22 +501,22 @@ function UplModeSelector({ onSelect, onBack }: { onSelect: (mode: UplMode) => vo
     ["innatretes", "INNA TRETES"],
   ];
   return (
-    <MenuShell onBack={onBack} backLabel="Menu utama">
-      <h1 className="menu-title">CEK UPL</h1>
+    <MenuShell onBack={onBack} backLabel="Menu utama" trail={[{ label: "Beranda", onClick: onBack }, { label: "Cek UPL" }]}>
+      <div className="menu-title-row"><h1 className="menu-title">CEK UPL</h1></div>
       <nav className="menu-grid" aria-label="Parser UPL">
-        {options.map(([mode, label]) => <MenuCard key={mode} mode={mode} label={label} onSelect={onSelect} />)}
+        {options.map(([mode, label]) => <ParserCard key={mode} mode={mode} label={label} onSelect={onSelect} />)}
       </nav>
     </MenuShell>
   );
 }
 
-function OmalaModeSelector({ onSelect, onBack }: { onSelect: (mode: "omala-hotel" | "omala-resto") => void; onBack: () => void }) {
+function OmalaModeSelector({ onSelect, onBack, onHome }: { onSelect: (mode: "omala-hotel" | "omala-resto") => void; onBack: () => void; onHome: () => void }) {
   return (
-    <MenuShell onBack={onBack} backLabel="CEK UPL">
-      <h1 className="menu-title">THE OMALA</h1>
+    <MenuShell onBack={onBack} backLabel="CEK UPL" trail={[{ label: "Beranda", onClick: onHome }, { label: "Cek UPL", onClick: onBack }, { label: "THE OMALA" }]}>
+      <div className="menu-title-row"><h1 className="menu-title">THE OMALA</h1></div>
       <nav className="menu-grid" aria-label="Kategori THE OMALA">
-        <MenuCard mode="omala-hotel" label="HOTEL" onSelect={onSelect} />
-        <MenuCard mode="omala-resto" label="RESTO" onSelect={onSelect} />
+        <MenuCard mode="omala-hotel" label="HOTEL" lead={<BrandLogo spec={categoryBrand("HOTEL")} size={44} />} onSelect={onSelect} />
+        <MenuCard mode="omala-resto" label="RESTO" lead={<BrandLogo spec={categoryBrand("RESTO")} size={44} />} onSelect={onSelect} />
       </nav>
     </MenuShell>
   );
@@ -480,7 +538,7 @@ export default function Home() {
   if (mode === "receipt-compare") return <ReceiptCompareChecker onBack={home} />;
   if (mode === "upl") return <UplChecker onBack={uplList} />;
   if (mode === "pointcoffe") return <PointCoffeeChecker onBack={uplList} />;
-  if (mode === "omala-menu") return <OmalaModeSelector onSelect={setMode} onBack={uplList} />;
+  if (mode === "omala-menu") return <OmalaModeSelector onSelect={setMode} onBack={uplList} onHome={home} />;
   if (mode === "omala-hotel") return <OmalaChecker category="HOTEL" onBack={() => setMode("omala-menu")} />;
   if (mode === "omala-resto") return <OmalaChecker category="RESTO" onBack={() => setMode("omala-menu")} />;
   if (mode === "omahpadhang") return <OmahPadhangChecker onBack={uplList} />;
