@@ -28,8 +28,9 @@ export function NstaxMark({ size = 34 }: { size?: number }) {
   return (
     <svg className="nx-mark" width={size} height={size} viewBox="0 0 40 40" role="img" aria-label="NSTAX">
       <rect x="3" y="3" width="34" height="34" rx="9" fill="#fff" stroke="#e2581a" strokeWidth="2.4" />
-      <path d="M13.5 27V15.2M13.5 19.6c0-2.8 2-4.6 4.7-4.6 2.8 0 4.5 1.7 4.5 4.6V27" fill="none" stroke="#e2581a" strokeWidth="3" strokeLinecap="round" />
-      <rect x="26" y="28" width="5" height="5" rx="1.2" fill="#e2581a" />
+      <circle cx="18.5" cy="21" r="5.5" fill="none" stroke="#e2581a" strokeWidth="3" />
+      <path d="M24 15v13" fill="none" stroke="#e2581a" strokeWidth="3" strokeLinecap="round" />
+      <rect x="31" y="31" width="6" height="6" rx="1.4" fill="#e2581a" />
     </svg>
   );
 }
