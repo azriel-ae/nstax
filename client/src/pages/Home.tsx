@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type DragEvent, type ChangeEvent } from "react";
+import { useMemo, useRef, useState, type DragEvent, type ChangeEvent, type ReactNode } from "react";
 import {
   AlertTriangle,
   BarChart3,
@@ -388,100 +388,103 @@ function NscChecker({ onBack }: { onBack?: () => void }) {
 }
 
 
-type AppMode = "api" | "api-menu" | "upl-menu" | "receipt-menu" | "fore" | "nsc" | "nasgor69" | "receipt" | "receipt-compare" | "upl" | "pointcoffe" | "omala-menu" | "omala-hotel" | "omala-resto" | "omahpadhang" | "jambuluwuk" | "innatretes" | "astana" | VendorKind;
+type AppMode = "api-menu" | "upl-menu" | "home" | "fore" | "nsc" | "nasgor69" | "receipt" | "receipt-compare" | "upl" | "pointcoffe" | "omala-menu" | "omala-hotel" | "omala-resto" | "omahpadhang" | "jambuluwuk" | "innatretes" | "astana" | VendorKind;
 
-function ApiParserSelector({ onSelect, onBack }: { onSelect: (mode: AppMode) => void; onBack: () => void }) {
-  const parsers: Array<[AppMode, string, string, string]> = [["astana", "CEK ASTANA", "Cek Data ASTANA", "JSON revenue · Gross, Service, Tax, Nett"], ["fore", "CEK FORE", "Cek Data FORE", "Transaksi counter, billing, total, dan pajak"], ["nsc", "CEK NSC", "Cek Data NSC", "Transaksi film, studio, order, dan kursi"], ["nasgor69", "CEK NASGOR 69", "Cek Data NASGOR 69", "Transaksi Nasgor 69 · Struk, DPP, Tax, dan Total"], ["rotio", "CEK ROTIO", "Cek Data ROTIO", "Parser dan rumus pajak khusus ROTIO"], ["kai", "CEK KAI", "Cek Data KAI", "Parser dan rumus pajak khusus KAI"], ["hokben", "CEK HOKBEN", "Cek Data HOKBEN", "Parser dan rumus pajak khusus HOKBEN"], ["kopken", "CEK KOPKEN", "Cek Data KOPKEN", "Parser dan rumus pajak khusus KOPKEN"], ["fave", "CEK FAVE", "Cek Data FAVE", "Parser dan rumus pajak khusus FAVE"], ["sams", "CEK SAMS", "Cek Data SAMS", "Parser dan rumus pajak khusus SAMS"]];
-  return <div className="mode-shell"><div className="mode-brand"><div className="mode-brand-left"><div className="brand-mark"><span>α</span></div><div><div className="brand-name">nstax</div><div className="brand-caption">transaction intelligence</div></div></div><div className="mode-status"><span className="status-dot" />Local</div></div><div className="hero-block"><button className="button button-secondary compact mode-back" type="button" onClick={onBack}>← Kembali ke menu utama</button><div className="eyebrow"><span className="eyebrow-line" /> NSTAX · CEK DATA API</div><h1>Pilih parser<br /><em>data API.</em></h1><p>{parsers.length} sumber data API didukung, masing-masing dengan parser dan rumus pajak tersendiri.</p><nav className="tool-list">{parsers.map(([mode, label, title, detail]) => <button className="tool-row" type="button" key={mode} onClick={() => onSelect(mode)}><span className="tool-row-main"><span className="tool-row-label">{label}</span><span className="tool-row-title">{title}</span><span className="tool-row-detail">{detail}</span></span><span className="tool-row-arrow"><ChevronRight size={16} /></span></button>)}</nav><div className="mode-local"><ShieldCheck size={16} /> Semua data diproses lokal di browser Anda</div></div></div>;
-}
-
-function ApiSelector({ onSelect }: { onSelect: (mode: AppMode) => void }) {
-  const menu: Array<[AppMode, string, string, string]> = [
-    ["api-menu", "01 · CEK DATA API", "Cek Data API", "ASTANA, FORE, NSC, NASGOR 69, ROTIO, KAI, HOKBEN, KOPKEN, FAVE, SAMS — 10 parser"],
-    ["receipt-menu", "02 · CEK STRUK", "Baca Data Struk", "Baca satu file struk, atau bandingkan dua file struk sekaligus"],
-    ["upl-menu", "03 · CEK UPL", "Periksa Upload File", "CEK KLAND, CEK POINTCOFFE, CEK THE OMALA, CEK OMAH PADHANG, CEK JAMBULUWUK, dan CEK INNA TRETES"],
-  ];
+function MenuShell({ onBack, backLabel, children }: { onBack?: () => void; backLabel?: string; children: ReactNode }) {
   return (
     <div className="mode-shell">
-      <div className="mode-brand">
-        <div className="mode-brand-left"><div className="brand-mark"><span>α</span></div><div><div className="brand-name">nstax</div><div className="brand-caption">transaction intelligence</div></div></div>
-        <div className="mode-status"><span className="status-dot" /></div>
-      </div>
-      <div className="hero-block">
-        <div className="eyebrow"><span className="eyebrow-line" /> NSTAX · MENU UTAMA</div>
-        <h1>Analyze, validate<br /><em>and compare</em> transaction data.</h1>
-        <p>Kelola dan periksa data transaksi dengan tools yang sesuai untuk setiap kebutuhan — seluruh perhitungan berjalan lokal di browser Anda.</p>
-        <div className="hero-stats">
-          <div className="hero-stat"><strong>10</strong><span>API Sources</span></div>
-          <div className="hero-stat"><strong>3</strong><span>Modul Utama</span></div>
-          <div className="hero-stat"><strong>PDF · XLSX · CSV · JSON</strong><span>Format Didukung</span></div>
-        </div>
-        <nav className="tool-list" aria-label="Menu utama">
-          {menu.map(([mode, label, title, detail]) => (
-            <button className="tool-row" type="button" key={mode} onClick={() => onSelect(mode)}>
-              <span className="tool-row-main">
-                <span className="tool-row-label">{label}</span>
-                <span className="tool-row-title">{title}</span>
-                <span className="tool-row-detail">{detail}</span>
-              </span>
-              <span className="tool-row-arrow"><ChevronRight size={16} /></span>
-            </button>
-          ))}
-        </nav>
-        <div className="mode-local"><ShieldCheck size={16} /> Semua data diproses lokal di browser Anda</div>
-      </div>
+      <header className="mode-brand">
+        <div className="mode-brand-left"><div className="brand-mark"><span>α</span></div><div className="brand-name">nstax</div></div>
+        {onBack && <button className="button button-secondary compact" type="button" onClick={onBack}>← {backLabel ?? "Kembali"}</button>}
+      </header>
+      <main className="menu-main">{children}</main>
     </div>
   );
 }
 
-function UplModeSelector({ onSelect, onBack }: { onSelect: (mode: "upl" | "pointcoffe" | "omala-menu" | "omahpadhang" | "jambuluwuk" | "innatretes") => void; onBack: () => void }) {
-  const options: Array<["upl" | "pointcoffe" | "omala-menu" | "omahpadhang" | "jambuluwuk" | "innatretes", string, string, string]> = [
-    ["upl", "CEK KLAND", "Cek KLAND", "Parser Excel KLAND yang sudah ada"],
-    ["pointcoffe", "CEK POINTCOFFE", "Cek PointCoffe", "Delimiter pipe (|), DPP, Pajak, Total"],
-    ["omala-menu", "CEK UPL THE OMALA", "Cek THE OMALA", "CSV delimiter titik koma · kategori HOTEL dan RESTO"],
-    ["omahpadhang", "CEK OMAH PADHANG", "Cek OMAH PADHANG", "Mode harian (1 ZIP) dan bulanan (banyak ZIP) · Net Sales, Gratuity, Tax, Total Amount"],
-    ["jambuluwuk", "CEK JAMBULUWUK", "Cek JAMBULUWUK", "Satu file Excel · kategori HOTEL dan RESTO"],
-    ["innatretes", "CEK INNA TRETES", "Cek INNA TRETES", "Mode harian (1 file) dan bulanan (banyak file) · kategori HOTEL, HIBURAN, dan RESTO"],
+function MenuCard<T extends string>({ mode, label, wide, onSelect }: { mode: T; label: string; wide?: boolean; onSelect: (mode: T) => void }) {
+  return <button className={`menu-card${wide ? " is-wide" : ""}`} type="button" onClick={() => onSelect(mode)}>{label}</button>;
+}
+
+function ApiSelector({ onSelect }: { onSelect: (mode: AppMode) => void }) {
+  return (
+    <MenuShell>
+      <nav className="menu-home" aria-label="Menu utama">
+        <MenuCard mode="api-menu" label="CEK DATA API" wide onSelect={onSelect} />
+        <MenuCard mode="receipt" label="CEK STRUK" onSelect={onSelect} />
+        <MenuCard mode="receipt-compare" label="COMPARE 2 FILE" onSelect={onSelect} />
+        <MenuCard mode="upl-menu" label="CEK UPL" wide onSelect={onSelect} />
+      </nav>
+    </MenuShell>
+  );
+}
+
+function ApiParserSelector({ onSelect, onBack }: { onSelect: (mode: AppMode) => void; onBack: () => void }) {
+  const parsers: Array<[AppMode, string]> = [["astana", "ASTANA"], ["fore", "FORE"], ["nsc", "NSC"], ["nasgor69", "NASGOR 69"], ["rotio", "ROTIO"], ["kai", "KAI"], ["hokben", "HOKBEN"], ["kopken", "KOPKEN"], ["fave", "FAVE"], ["sams", "SAMS"]];
+  return (
+    <MenuShell onBack={onBack} backLabel="Menu utama">
+      <h1 className="menu-title">CEK DATA API</h1>
+      <nav className="menu-grid" aria-label="Parser API">
+        {parsers.map(([mode, label]) => <MenuCard key={mode} mode={mode} label={label} onSelect={onSelect} />)}
+      </nav>
+    </MenuShell>
+  );
+}
+
+type UplMode = "upl" | "pointcoffe" | "omala-menu" | "omahpadhang" | "jambuluwuk" | "innatretes";
+
+function UplModeSelector({ onSelect, onBack }: { onSelect: (mode: UplMode) => void; onBack: () => void }) {
+  const options: Array<[UplMode, string]> = [
+    ["upl", "KLAND"],
+    ["pointcoffe", "POINTCOFFE"],
+    ["omala-menu", "THE OMALA"],
+    ["omahpadhang", "OMAH PADHANG"],
+    ["jambuluwuk", "JAMBULUWUK"],
+    ["innatretes", "INNA TRETES"],
   ];
-  return <div className="mode-shell"><div className="mode-brand"><div className="mode-brand-left"><div className="brand-mark"><span>α</span></div><div><div className="brand-name">nstax</div><div className="brand-caption">transaction intelligence</div></div></div><div className="mode-status"><span className="status-dot" />Local</div></div><div className="hero-block"><button className="button button-secondary compact mode-back" type="button" onClick={onBack}>← Kembali ke CEK DATA API</button><div className="eyebrow"><span className="eyebrow-line" /> CEK UPL</div><h1>Pilih sumber<br /><em>data UPL.</em></h1><nav className="tool-list">{options.map(([mode, label, title, detail]) => <button className="tool-row" type="button" key={mode} onClick={() => onSelect(mode)}><span className="tool-row-main"><span className="tool-row-label">{label}</span><span className="tool-row-title">{title}</span><span className="tool-row-detail">{detail}</span></span><span className="tool-row-arrow"><ChevronRight size={16} /></span></button>)}</nav></div></div>;
+  return (
+    <MenuShell onBack={onBack} backLabel="Menu utama">
+      <h1 className="menu-title">CEK UPL</h1>
+      <nav className="menu-grid" aria-label="Parser UPL">
+        {options.map(([mode, label]) => <MenuCard key={mode} mode={mode} label={label} onSelect={onSelect} />)}
+      </nav>
+    </MenuShell>
+  );
 }
 
 function OmalaModeSelector({ onSelect, onBack }: { onSelect: (mode: "omala-hotel" | "omala-resto") => void; onBack: () => void }) {
-  const options: Array<["omala-hotel" | "omala-resto", string, string, string]> = [
-    ["omala-hotel", "HOTEL", "Cek THE OMALA HOTEL", "FO Transaction Journal · Date, Bill Number, Description, Amount"],
-    ["omala-resto", "RESTO", "Cek THE OMALA RESTO", "Cashier Sales Report · Bill Number dan Total"],
-  ];
-  return <div className="mode-shell"><div className="mode-brand"><div className="mode-brand-left"><div className="brand-mark"><span>α</span></div><div><div className="brand-name">nstax</div><div className="brand-caption">transaction intelligence</div></div></div><div className="mode-status"><span className="status-dot" />Local</div></div><div className="hero-block"><button className="button button-secondary compact mode-back" type="button" onClick={onBack}>← Kembali ke CEK UPL</button><div className="eyebrow"><span className="eyebrow-line" /> CEK UPL · THE OMALA</div><h1>Pilih kategori<br /><em>THE OMALA.</em></h1><nav className="tool-list">{options.map(([mode, label, title, detail]) => <button className="tool-row" type="button" key={mode} onClick={() => onSelect(mode)}><span className="tool-row-main"><span className="tool-row-label">{label}</span><span className="tool-row-title">{title}</span><span className="tool-row-detail">{detail}</span></span><span className="tool-row-arrow"><ChevronRight size={16} /></span></button>)}</nav></div></div>;
-}
-
-function ReceiptModeSelector({ onSelect, onBack }: { onSelect: (mode: "receipt" | "receipt-compare") => void; onBack: () => void }) {
-  const options: Array<["receipt" | "receipt-compare", string, string, string]> = [
-    ["receipt", "CEK STRUK", "Periksa satu file struk", "Parser PDF, Excel, dan CSV lama"],
-    ["receipt-compare", "BANDINGKAN 2 FILE STRUK", "Compare dua file struk", "Bandingkan berdasarkan no_struk dan field transaksi"],
-  ];
-  return <div className="mode-shell"><div className="mode-brand"><div className="mode-brand-left"><div className="brand-mark"><span>α</span></div><div><div className="brand-name">nstax</div><div className="brand-caption">transaction intelligence</div></div></div><div className="mode-status"><span className="status-dot" />Local</div></div><div className="hero-block"><button className="button button-secondary compact mode-back" type="button" onClick={onBack}>← Kembali ke menu utama</button><div className="eyebrow"><span className="eyebrow-line" /> CEK STRUK</div><h1>Pilih fitur<br /><em>struk.</em></h1><nav className="tool-list">{options.map(([mode, label, title, detail]) => <button className="tool-row" type="button" key={mode} onClick={() => onSelect(mode)}><span className="tool-row-main"><span className="tool-row-label">{label}</span><span className="tool-row-title">{title}</span><span className="tool-row-detail">{detail}</span></span><span className="tool-row-arrow"><ChevronRight size={16} /></span></button>)}</nav></div></div>;
+  return (
+    <MenuShell onBack={onBack} backLabel="CEK UPL">
+      <h1 className="menu-title">THE OMALA</h1>
+      <nav className="menu-grid" aria-label="Kategori THE OMALA">
+        <MenuCard mode="omala-hotel" label="HOTEL" onSelect={onSelect} />
+        <MenuCard mode="omala-resto" label="RESTO" onSelect={onSelect} />
+      </nav>
+    </MenuShell>
+  );
 }
 
 export default function Home() {
-  const [mode, setMode] = useState<AppMode>("api");
-  const back = () => setMode("api");
-  if (mode === "api") return <ApiSelector onSelect={setMode} />;
-  if (mode === "api-menu") return <ApiParserSelector onSelect={setMode} onBack={back} />;
-  if (mode === "upl-menu") return <UplModeSelector onSelect={setMode} onBack={back} />;
-  if (mode === "receipt-menu") return <ReceiptModeSelector onSelect={setMode} onBack={back} />;
-  if (mode === "fore") return <ForeChecker onBack={back} />;
-  if (mode === "nsc") return <NscChecker onBack={back} />;
-  if (mode === "nasgor69") return <Nasgor69Checker onBack={back} />;
-  if (mode === "receipt") return <ReceiptChecker onBack={() => setMode("receipt-menu")} />;
-  if (mode === "receipt-compare") return <ReceiptCompareChecker onBack={() => setMode("receipt-menu")} />;
-  if (mode === "upl") return <UplChecker onBack={() => setMode("upl-menu")} />;
-  if (mode === "pointcoffe") return <PointCoffeeChecker onBack={() => setMode("upl-menu")} />;
-  if (mode === "omala-menu") return <OmalaModeSelector onSelect={setMode} onBack={() => setMode("upl-menu")} />;
+  const [mode, setMode] = useState<AppMode>("home");
+  const home = () => setMode("home");
+  const apiList = () => setMode("api-menu");
+  const uplList = () => setMode("upl-menu");
+  if (mode === "home") return <ApiSelector onSelect={setMode} />;
+  if (mode === "api-menu") return <ApiParserSelector onSelect={setMode} onBack={home} />;
+  if (mode === "upl-menu") return <UplModeSelector onSelect={setMode} onBack={home} />;
+  if (mode === "fore") return <ForeChecker onBack={apiList} />;
+  if (mode === "nsc") return <NscChecker onBack={apiList} />;
+  if (mode === "nasgor69") return <Nasgor69Checker onBack={apiList} />;
+  if (mode === "astana") return <AstanaChecker onBack={apiList} />;
+  if (mode === "receipt") return <ReceiptChecker onBack={home} />;
+  if (mode === "receipt-compare") return <ReceiptCompareChecker onBack={home} />;
+  if (mode === "upl") return <UplChecker onBack={uplList} />;
+  if (mode === "pointcoffe") return <PointCoffeeChecker onBack={uplList} />;
+  if (mode === "omala-menu") return <OmalaModeSelector onSelect={setMode} onBack={uplList} />;
   if (mode === "omala-hotel") return <OmalaChecker category="HOTEL" onBack={() => setMode("omala-menu")} />;
   if (mode === "omala-resto") return <OmalaChecker category="RESTO" onBack={() => setMode("omala-menu")} />;
-  if (mode === "omahpadhang") return <OmahPadhangChecker onBack={() => setMode("upl-menu")} />;
-  if (mode === "jambuluwuk") return <JambuluwukChecker onBack={() => setMode("upl-menu")} />;
-  if (mode === "innatretes") return <InnaTretesChecker onBack={() => setMode("upl-menu")} />;
-  if (mode === "astana") return <AstanaChecker onBack={back} />;
-  return <VendorChecker kind={mode} onBack={back} />;
+  if (mode === "omahpadhang") return <OmahPadhangChecker onBack={uplList} />;
+  if (mode === "jambuluwuk") return <JambuluwukChecker onBack={uplList} />;
+  if (mode === "innatretes") return <InnaTretesChecker onBack={uplList} />;
+  return <VendorChecker kind={mode} onBack={apiList} />;
 }

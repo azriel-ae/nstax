@@ -627,3 +627,31 @@ input, select, textarea { accent-color: var(--amber); }
 .cmp-table th.numeric, .cmp-table td.numeric { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .cmp-diff-box table { width: 100%; }
 @media (max-width: 860px) { .cmp3-kinds { grid-template-columns: 1fr; } .cmp3-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cmp3-block, .cmp3-advanced { margin-left: 12px; margin-right: 12px; } }
+
+/* ===== Menu (home + parser lists): name-only cards ===== */
+.menu-main { width: min(100%, 880px); margin: clamp(32px, 9vh, 96px) auto 0; }
+.menu-title { margin: 0 0 24px; color: var(--ink); font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.menu-home, .menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.menu-card {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  min-height: 112px; padding: 20px 16px; width: 100%;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-lg);
+  font-family: var(--sans); font-size: clamp(16px, 2vw, 20px); font-weight: 700; letter-spacing: .04em;
+  overflow-wrap: anywhere; cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms var(--ease-out), box-shadow 160ms ease;
+}
+.menu-home .menu-card { min-height: 132px; }
+.menu-card.is-wide { grid-column: 1 / -1; }
+.menu-card:hover { border-color: var(--amber-strong); background: var(--amber-soft); transform: translateY(-2px); box-shadow: var(--shadow-soft); }
+.menu-card:active { transform: translateY(0); }
+.menu-card:focus-visible { outline: 2px solid var(--amber-strong); outline-offset: 2px; }
+.menu-grid .menu-card { min-height: 88px; }
+@media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .menu-home { grid-template-columns: 1fr; }
+  .menu-home .menu-card, .menu-grid .menu-card { min-height: 76px; }
+  .menu-grid { gap: 12px; }
+  .menu-home { gap: 12px; }
+  .menu-main { margin-top: 28px; }
+}
