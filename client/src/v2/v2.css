@@ -1,0 +1,66 @@
+/* NSTAX V2 — semua aturan di bawah .v2-root agar tidak menyentuh aplikasi lama. */
+.v2-root {
+  --v2-navy: #0f2a4a; --v2-navy-2: #17406e; --v2-blue: #1d5fd1; --v2-blue-soft: #e8f0fd;
+  --v2-bg: #ffffff; --v2-surface: #f5f7fa; --v2-line: #dde3ec; --v2-ink: #14202e; --v2-muted: #5d6b7c;
+  --v2-ok: #1d7a46; --v2-ok-bg: #e7f4ec; --v2-warn: #8a5a00; --v2-warn-bg: #fbf1d9; --v2-bad: #b3261e; --v2-bad-bg: #fbeae8;
+  min-height: 100vh; display: flex; background: var(--v2-bg); color: var(--v2-ink); font-family: var(--sans, ui-sans-serif, system-ui, sans-serif);
+  /* Re-skin halaman lama yang di-embed lewat variabel (hanya berlaku di dalam V2). */
+  --paper: #ffffff; --surface: #ffffff; --ink: #14202e; --ink-soft: #243447; --muted: #5d6b7c; --faint: #8a97a8;
+  --line: #dde3ec; --line-strong: #c5cfdd; --amber: #1d5fd1; --amber-strong: #174fb0; --amber-soft: #e8f0fd; --amber-deep: #0f2a4a;
+  --ochre: #e8f0fd; --rose: #fbeae8; --slate: #eef2f7; --teal: #eef2f7; --coral: #e8f0fd;
+  --sidebar-bg: #ffffff; --sidebar-line: #dde3ec; --sidebar-hover: #e8f0fd; --sidebar-ink: #14202e; --sidebar-muted: #5d6b7c;
+  --danger: #b3261e; --danger-bg: #fbeae8; --warning: #8a5a00; --warning-bg: #fbf1d9; --success: #1d7a46; --success-bg: #e7f4ec;
+}
+.v2-root * { box-sizing: border-box; }
+.v2-side { width: 240px; flex: 0 0 240px; background: var(--v2-navy); color: #e6edf7; padding: 20px 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.v2-brand { font-weight: 700; letter-spacing: .04em; font-size: 18px; padding: 4px 10px 2px; color: #fff; }
+.v2-brand small { display: block; font-weight: 500; font-size: 11px; letter-spacing: .08em; color: #9db3d1; margin-top: 2px; }
+.v2-nav-label { font-size: 10.5px; letter-spacing: .1em; color: #8fa6c6; padding: 14px 10px 4px; text-transform: uppercase; }
+.v2-nav a { display: block; padding: 9px 10px; border-radius: 7px; color: #d5e0f0; text-decoration: none; font-size: 14px; cursor: pointer; }
+.v2-nav a:hover { background: rgba(255,255,255,.08); }
+.v2-nav a.is-active { background: #fff; color: var(--v2-navy); font-weight: 600; }
+.v2-side-foot { margin-top: auto; font-size: 11.5px; color: #8fa6c6; padding: 10px; line-height: 1.5; }
+.v2-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.v2-top { display: none; background: var(--v2-navy); color: #fff; padding: 10px 14px; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 20; }
+.v2-top button { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 6px; padding: 6px 10px; font-size: 14px; }
+.v2-content { padding: 28px clamp(16px, 4vw, 48px) 64px; max-width: 1280px; width: 100%; }
+.v2-h1 { font-size: 24px; margin: 0 0 4px; color: var(--v2-navy); }
+.v2-sub { color: var(--v2-muted); margin: 0 0 20px; font-size: 14px; max-width: 70ch; }
+.v2-panel { background: #fff; border: 1px solid var(--v2-line); border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+.v2-panel h2 { font-size: 15px; margin: 0 0 10px; color: var(--v2-navy); }
+.v2-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.v2-card { display: block; text-align: left; background: #fff; border: 1px solid var(--v2-line); border-radius: 10px; padding: 16px; color: inherit; text-decoration: none; cursor: pointer; font: inherit; }
+.v2-card:hover { border-color: var(--v2-blue); background: var(--v2-blue-soft); }
+.v2-card strong { display: block; color: var(--v2-navy); margin-bottom: 4px; }
+.v2-card span { color: var(--v2-muted); font-size: 13px; }
+.v2-btn { border: 1px solid var(--v2-line); background: #fff; color: var(--v2-ink); border-radius: 7px; padding: 8px 14px; font: inherit; font-size: 14px; cursor: pointer; }
+.v2-btn:hover { border-color: var(--v2-blue); }
+.v2-btn.primary { background: var(--v2-blue); border-color: var(--v2-blue); color: #fff; }
+.v2-btn:disabled { opacity: .5; cursor: not-allowed; }
+.v2-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.v2-text { width: 100%; min-height: 150px; font-family: var(--mono, monospace); font-size: 12.5px; border: 1px solid var(--v2-line); border-radius: 8px; padding: 10px; resize: vertical; }
+.v2-banner { border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; border: 1px solid; }
+.v2-banner.ok { background: var(--v2-ok-bg); color: var(--v2-ok); border-color: #b9dcc6; }
+.v2-banner.warn { background: var(--v2-warn-bg); color: var(--v2-warn); border-color: #ecd9a3; }
+.v2-banner.bad { background: var(--v2-bad-bg); color: var(--v2-bad); border-color: #efc2be; }
+.v2-metrics { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.v2-metric { background: var(--v2-surface); border-radius: 8px; padding: 12px; }
+.v2-metric span { display: block; font-size: 12px; color: var(--v2-muted); }
+.v2-metric strong { font-size: 17px; color: var(--v2-navy); }
+.v2-table-wrap { overflow-x: auto; border: 1px solid var(--v2-line); border-radius: 8px; max-height: 70vh; }
+.v2-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.v2-table th { position: sticky; top: 0; background: var(--v2-surface); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--v2-line); white-space: nowrap; }
+.v2-table td { padding: 7px 10px; border-bottom: 1px solid #edf0f5; white-space: nowrap; }
+.v2-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.v2-input { border: 1px solid var(--v2-line); border-radius: 7px; padding: 8px 10px; font: inherit; font-size: 14px; min-width: 220px; }
+.v2-back { margin-bottom: 14px; }
+/* Halaman lama di-embed tanpa sidebar-nya sendiri (sidebar lama hanya disembunyikan di dalam V2). */
+.v2-embed .app-sidebar { display: none; }
+.v2-embed .app-shell, .v2-embed .mode-shell { min-height: auto; }
+.v2-embed .topbar { position: static; }
+@media (max-width: 900px) {
+  .v2-root { display: block; }
+  .v2-top { display: flex; }
+  .v2-side { position: fixed; z-index: 30; left: 0; top: 0; transform: translateX(-100%); transition: transform .2s; width: 260px; }
+  .v2-side.open { transform: none; }
+}
