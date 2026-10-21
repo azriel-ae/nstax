@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "framework": "vite",
+  "installCommand": "npm ci --legacy-peer-deps --no-audit --no-fund",
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "dist/public",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
