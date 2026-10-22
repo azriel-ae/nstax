@@ -1,6 +1,6 @@
 # NSTAX
 
-NSTAX aplikasi untuk mengecek data transaksi by azril
+NSTAX aplikasi untuk mengecek data transaksi
 
 ## Menjalankan
 
