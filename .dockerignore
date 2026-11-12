@@ -1,0 +1,31 @@
+# Dependensi & hasil build (dibuat ulang di dalam image)
+node_modules
+dist
+*.tsbuildinfo
+
+# Git & editor
+.git
+.gitignore
+.vscode
+.idea
+
+# Rahasia / lingkungan lokal — jangan pernah masuk image
+.env
+.env.*
+*.pem
+*.key
+*.log
+.DS_Store
+
+# Sisa folder lokal CLI hosting lama (tidak dipakai)
+.vercel
+
+# NSTAX V2 — tidak boleh ikut ke build context
+client/src/v2
+
+# Dokumen & berkas Docker yang tidak dibutuhkan di dalam image
+Dockerfile
+.dockerignore
+docs
+docker/verify.sh
+README.md
